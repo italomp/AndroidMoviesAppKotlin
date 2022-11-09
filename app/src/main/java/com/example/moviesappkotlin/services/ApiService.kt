@@ -2,37 +2,21 @@ package com.example.moviesappkotlin.services
 
 import com.example.moviesappkotlin.util.Constants.Companion.API_BASE_URL
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
 class ApiService {
     companion object{
-        private var mediaService : MediaService? = null
-        private var movieService : MovieService? = null
-
-        fun getMediaService() : MediaService?{
-            if(mediaService == null){
-                val retrofit : Retrofit = Retrofit.Builder()
-                    .baseUrl(API_BASE_URL)
-                    .addConverterFactory(MoshiConverterFactory.create())
-                    .build()
-
-                mediaService = retrofit.create(MediaService::class.java)
-            }
-            return mediaService
+        private val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+        private val retrofit: Retrofit by lazy{
+            Retrofit.Builder()
+            .baseUrl(API_BASE_URL)
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .build()
         }
-
-        fun getMovieService() : MovieService?{
-            if(movieService == null){
-//                val moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
-                val retrofit: Retrofit = Retrofit.Builder()
-                    .baseUrl(API_BASE_URL)
-                    .addConverterFactory(MoshiConverterFactory.create())
-                    .build()
-
-                movieService = retrofit.create(MovieService::class.java)
-            }
-            return movieService
+        val movieService: MovieService by lazy {
+            retrofit.create(MovieService::class.java)
         }
     }
 }

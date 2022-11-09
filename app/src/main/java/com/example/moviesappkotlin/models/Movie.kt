@@ -6,7 +6,7 @@ class Movie : Media {
     private val posterPath: String?
     private val revenue: Long?
 
-    constructor(id: Long, title: String?, posterPath: String?, mediaType: String, revenue: Long?) :
+    constructor(id: Long, title: String?, posterPath: String?, mediaType: String?, revenue: Long?) :
             super(id, mediaType, title){
         this.id = id
         this.title = title
@@ -14,7 +14,7 @@ class Movie : Media {
         this.revenue = revenue
     }
 
-    constructor(id: Long, title: String?, posterPath: String?, mediaType: String) :
+    constructor(id: Long, title: String?, posterPath: String?, mediaType: String?) :
             super(id, mediaType, title){
         this.id = id
         this.title = title

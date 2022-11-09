@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getMovies(){
-        ApiService.getMovieService()?.getMovies(API_KEY)?.enqueue(
+        ApiService.movieService.getMovies(API_KEY).enqueue(
             object : Callback<MediaResponseList>{
                 override fun onResponse(
                     call: Call<MediaResponseList>,
@@ -71,22 +71,23 @@ class MainActivity : AppCompatActivity() {
 
                 override fun onFailure(call: Call<MediaResponseList>, t: Throwable) {
                     println("onFailure")
+                    t.printStackTrace()
                 }
 
             })
     }
 
-    private fun fillGridLayout(){
+//    private fun fillGridLayout(){
+//
+//    }
 
-    }
-
-    fun multiSearch(query : String): Unit {
-        ApiService.getMediaService()?.multiSearch(API_KEY, query)
+//    fun multiSearch(query : String): Unit {
+//        ApiService.getMediaService()?.multiSearch(API_KEY, query)
 //        for(i in 0..19){
 //            var cardView : CardView = LayoutInflater.from(this).inflate(
 //                R.layout.media_card, this.parent as? ViewGroup,false) as CardView
 //            gridLayout.addView(cardView)
 //        }
-    }
+//    }
 
 }

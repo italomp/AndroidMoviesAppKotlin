@@ -7,7 +7,7 @@ import com.example.moviesappkotlin.models.Show
 import com.example.moviesappkotlin.util.Constants
 import com.squareup.moshi.Json
 
-class MediaResponse(
+data class MediaResponse(
     @Json(name = "id")
     val id : Long,
     @Json(name = "original_title")
@@ -19,7 +19,7 @@ class MediaResponse(
     @Json(name = "know_for")
     val moviesAndShows : MutableList<MediaResponse>?,
     @Json(name = "media_type")
-    val mediaType : String,
+    val mediaType : String?,
     @Json(name = "revenue")
     val revenue : Long?){
 
