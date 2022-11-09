@@ -3,8 +3,8 @@ package com.example.moviesappkotlin.models
 class Movie : Media {
     override val id: Long
     override val title: String?
-    private val posterPath: String?
-    private val revenue: Long?
+    val posterPath: String?
+    val revenue: Long?
 
     constructor(id: Long, title: String?, posterPath: String?, mediaType: String?, revenue: Long?) :
             super(id, mediaType, title){

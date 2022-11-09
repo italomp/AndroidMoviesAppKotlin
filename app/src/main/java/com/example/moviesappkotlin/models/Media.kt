@@ -4,10 +4,10 @@ import com.example.moviesappkotlin.util.Constants
 import java.util.*
 
 open class Media {
-    protected open val id: Long?
-    protected open val mediaType: String?
-    protected open val title : String?
-    protected open val moviesAndShows : List<Media>?
+    open val id: Long?
+    open val mediaType: String?
+    open val title : String?
+    open val moviesAndShows : List<Media>?
 
     constructor(id: Long?, mediaType: String?) {
         this.id = id

@@ -29,8 +29,8 @@
                 android:id="@+id/grid_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:columnCount="3"
-                android:rowCount="20"/>
+                android:columnCount="2"
+                android:rowCount="10"/>
         </ScrollView>
 
         <com.google.android.material.tabs.TabLayout
