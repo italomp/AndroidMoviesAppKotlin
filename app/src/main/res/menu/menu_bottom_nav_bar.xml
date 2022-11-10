@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <item
+        android:id="@+id/bottom_nav_home_icon"
+        android:icon="@drawable/ic_home"
+        tools:ignore="MenuTitle" />
+
+    <item
+        android:id="@+id/bottom_nav_chart_icon"
+        android:icon="@drawable/ic_chart"
+        tools:ignore="MenuTitle"/>
+</menu>
