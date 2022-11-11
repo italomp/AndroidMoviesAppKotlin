@@ -1,6 +1,22 @@
 <resources>
     <string name="app_name">Movies App Kotlin</string>
     <string name="placeholder_search">Buscar por um Filme, Show ou Pessoa...</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="select_year">Ano: </string>
+    <string name="description_spinner_year">Seletor de ano para filtrar filmes pelo ano</string>
+
+    <string-array name="select_year">
+        <item>2022</item>
+        <item>2021</item>
+        <item>2020</item>
+        <item>2019</item>
+        <item>2018</item>
+        <item>2017</item>
+        <item>2016</item>
+        <item>2015</item>
+        <item>2014</item>
+        <item>2013</item>
+        <item>2012</item>
+        <item>2011</item>
+        <item>2010</item>
+    </string-array>
 </resources>

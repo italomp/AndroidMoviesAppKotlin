@@ -28,12 +28,12 @@ import retrofit2.Response
 class SearchFragment : Fragment() {
     private lateinit var gridLayout: GridLayout
     private lateinit var searchView: SearchView
-    lateinit var fragmentView: View
+    private lateinit var fragmentView: View
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         fragmentView =  inflater.inflate(R.layout.fragment_search, container, false)
         setViews()
         getMovies()

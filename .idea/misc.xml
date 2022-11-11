@@ -4,11 +4,13 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="app/src/main/res/drawable/ic_chart.xml" value="0.2745" />
+        <entry key="app/src/main/res/drawable/ic_chart_legend.xml" value="0.19" />
         <entry key="app/src/main/res/drawable/ic_home.xml" value="0.2745" />
+        <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.19" />
         <entry key="app/src/main/res/drawable/search_view_background.xml" value="0.2115" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.27807971014492755" />
         <entry key="app/src/main/res/layout/fragment_search.xml" value="0.27807971014492755" />
-        <entry key="app/src/main/res/layout/fragment_statistics.xml" value="0.20625" />
+        <entry key="app/src/main/res/layout/fragment_statistics.xml" value="0.25" />
         <entry key="app/src/main/res/layout/media_car.xml" value="0.27807971014492755" />
         <entry key="app/src/main/res/layout/media_card.xml" value="0.5" />
         <entry key="app/src/main/res/layout/media_details.xml" value="0.18177083333333333" />
