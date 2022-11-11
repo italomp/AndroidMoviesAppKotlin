@@ -3,7 +3,6 @@ package com.example.moviesappkotlin.activities
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.MenuItem
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -12,7 +11,6 @@ import com.example.moviesappkotlin.R
 import com.example.moviesappkotlin.fragments.SearchFragment
 import com.example.moviesappkotlin.fragments.StatisticsFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.navigation.NavigationBarView
 
 @RequiresApi(Build.VERSION_CODES.N)
 class MainActivity : AppCompatActivity() {
@@ -25,19 +23,17 @@ class MainActivity : AppCompatActivity() {
         replaceFragment(SearchFragment())
 
         bottomNavBar = findViewById(R.id.bottom_nav_bar)
-        bottomNavBar.setOnItemSelectedListener(object: NavigationBarView.OnItemSelectedListener{
-            override fun onNavigationItemSelected(item: MenuItem): Boolean {
-                item.isChecked = true
-                if(item.itemId == R.id.bottom_nav_home_icon)
-                    replaceFragment(SearchFragment())
-                else if(item.itemId == R.id.bottom_nav_chart_icon)
-                    replaceFragment(StatisticsFragment())
-                return false
-            }
-        })
+        bottomNavBar.setOnItemSelectedListener { item ->
+            item.isChecked = true
+            if (item.itemId == R.id.bottom_nav_home_icon)
+                replaceFragment(SearchFragment())
+            else if (item.itemId == R.id.bottom_nav_chart_icon)
+                replaceFragment(StatisticsFragment())
+            false
+        }
     }
 
-    fun replaceFragment(fragment: Fragment){
+    private fun replaceFragment(fragment: Fragment){
         var fragmentManager: FragmentManager = supportFragmentManager
         var fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.frame_layout, fragment)

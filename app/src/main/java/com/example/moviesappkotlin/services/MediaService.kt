@@ -7,5 +7,6 @@ import retrofit2.http.Query
 
 interface MediaService {
     @GET("search/multi")
-    fun multiSearch(@Query("api_key") apiKey: String, @Query("query") query: String) : Call<MediaResponseList>
+    fun multiSearch(
+        @Query("api_key") apiKey: String, @Query("query") query: String) : Call<MediaResponseList>
 }

@@ -18,5 +18,8 @@ class ApiService {
         val movieService: MovieService by lazy {
             retrofit.create(MovieService::class.java)
         }
+        val mediaService: MediaService by lazy{
+            retrofit.create(MediaService::class.java)
+        }
     }
 }

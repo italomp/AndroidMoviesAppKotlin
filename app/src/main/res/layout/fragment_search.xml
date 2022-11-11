@@ -14,7 +14,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="10dp"
+        >
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -25,6 +26,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
+                android:background="@drawable/search_view_background"
+                android:layout_marginHorizontal="8dp"
+                android:queryHint="@string/placeholder_search"
+                android:queryBackground="@null"
+                android:iconifiedByDefault="false"
                 />
 
             <GridLayout

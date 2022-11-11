@@ -12,11 +12,12 @@ import android.widget.TextView
 import com.example.moviesappkotlin.R
 import com.example.moviesappkotlin.models.Media
 import com.example.moviesappkotlin.models.Movie
+import com.example.moviesappkotlin.models.Person
 import com.example.moviesappkotlin.models.Show
 import com.example.moviesappkotlin.responses.MediaResponse
 import com.example.moviesappkotlin.responses.MediaResponseList
 import com.example.moviesappkotlin.services.ApiService
-import com.example.moviesappkotlin.util.Constants
+import com.example.moviesappkotlin.util.Constants.Companion.API_KEY
 import com.example.moviesappkotlin.util.MediaMapper
 import com.example.moviesappkotlin.util.Util
 import com.squareup.picasso.Picasso
@@ -36,7 +37,6 @@ class SearchFragment : Fragment() {
         fragmentView =  inflater.inflate(R.layout.fragment_search, container, false)
         setViews()
         getMovies()
-        // Inflate the layout for this fragment
         return fragmentView
     }
 
@@ -49,18 +49,21 @@ class SearchFragment : Fragment() {
         searchView = fragmentView.findViewById(R.id.search_view)
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String?): Boolean {
+                if (query == null) return false
+                multiSearch(query)
                 return false
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                // Send request
+                if (newText == null) return false
+                multiSearch(newText)
                 return false
             }
         })
     }
 
     private fun getMovies(){
-        ApiService.movieService.getMovies(Constants.API_KEY).enqueue(
+        ApiService.movieService.getMovies(API_KEY).enqueue(
             object : Callback<MediaResponseList> {
                 override fun onResponse(
                     call: Call<MediaResponseList>,
@@ -73,56 +76,108 @@ class SearchFragment : Fragment() {
                         fillGridLayout(mediaList);
                     }
                     else{
-                        Util.showMessage(view!!.context, "Http status code: ${response.code()}")
+                        Util.showMessage(fragmentView.context, "Http status code: ${response.code()}.")
                     }
                 }
 
                 override fun onFailure(call: Call<MediaResponseList>, t: Throwable) {
-                    Util.showMessage(view!!.context, "Requisição de filmes falhou")
+                    println("executando onFailure")
+                    Util.showMessage(fragmentView.context, "Requisição de filmes falhou.")
                     t.printStackTrace()
                 }
             })
     }
 
     private fun fillGridLayout(mediaList: List<Media>){
-        for(media in mediaList){
-            var cardView = LayoutInflater.from(fragmentView.context)
+        for(i in mediaList.indices){
+            val cardView = LayoutInflater.from(fragmentView.context)
                 .inflate(R.layout.media_card, gridLayout, false)
-            var posterMediaView = cardView.findViewById<ImageView>(R.id.media_poster)
-            var titleMediaView = cardView.findViewById<TextView>(R.id.media_title)
+            val posterMediaView = cardView.findViewById<ImageView>(R.id.media_poster)
+            val titleMediaView = cardView.findViewById<TextView>(R.id.media_title)
 
-            setTitleMediaView(titleMediaView, media)
-            setMediaPoster(posterMediaView, media)
+            setMediaTitleView(titleMediaView, mediaList[i])
+            setMediaPosterView(posterMediaView, mediaList[i])
 
             gridLayout.addView(cardView)
         }
     }
 
-    private fun setMediaPoster(posterMediaView: ImageView, media: Media){
+    private fun setMediaPosterView(posterMediaView: ImageView, media: Media){
         var posterPath : String? = ""
-        if(Util.isItMovie(media)){
-            var movie = media as Movie
-            posterPath = movie.posterPath
-        }
-        else if(Util.isItShow(media)){
-            var show = media as Show
-            posterPath = show.posterPath
-        }
+        if(Util.isItMovie(media))
+            posterPath = (media as Movie).posterPath
+        else if(Util.isItShow(media))
+            posterPath = (media as Show).posterPath
         Picasso.get()
             .load("https://image.tmdb.org/t/p/w342/$posterPath")
             .into(posterMediaView)
     }
 
-    private fun setTitleMediaView(titleMediaView: TextView, media: Media){
+    private fun setMediaTitleView(titleMediaView: TextView, media: Media){
         var mediaTitle : String? = ""
         if(Util.isItMovie(media)){
-            var movie = media as Movie
+            val movie = media as Movie
             mediaTitle = movie.title
         }
         else if(Util.isItShow(media)){
-            var show = media as Show
+            val show = media as Show
             mediaTitle = show.name
         }
         titleMediaView.text = mediaTitle
+    }
+
+    private fun multiSearch(query: String){
+        ApiService.mediaService.multiSearch(API_KEY, query).enqueue(
+            object: Callback<MediaResponseList>{
+                override fun onResponse(
+                    call: Call<MediaResponseList>,
+                    response: Response<MediaResponseList>
+                ) {
+                    if(response.isSuccessful){
+                        // Removendo itens listados anteriormente
+                        gridLayout.removeAllViews();
+
+                        val mediaResponseList : List<MediaResponse> = response.body()!!.responseList
+                        var mediaList: List<Media> = MediaMapper.fromMediaResponseToMedia(mediaResponseList)
+
+                        // Extraindo filmes e shows de pessoas
+                        mediaList = parseMedia(mediaList)
+                        renderingMediasOrNotFoundMessage(mediaList)
+                    }
+                    else{
+                        Util.showMessage(fragmentView.context, "Http status code: ${response.code()}.")
+                    }
+                }
+
+                override fun onFailure(call: Call<MediaResponseList>, t: Throwable) {
+                    Util.showMessage(fragmentView.context, "Requisição de busca falhou.")
+                }
+            })
+    }
+
+
+    private fun parseMedia(mediaList: List<Media>): List<Media>{
+        val resultList : MutableList<Media> = mutableListOf()
+        val mediaSet: MutableSet<Media> = mutableSetOf()
+
+        for(media in mediaList){
+            if(Util.isItMovie(media) || Util.isItShow(media)){
+                mediaSet.add(media)
+            }
+            else{
+                val moviesAndShows = (media as Person).moviesAndShows
+                if (moviesAndShows != null)
+                    mediaSet.addAll(moviesAndShows)
+            }
+        }
+        resultList.addAll(mediaSet)
+        return resultList
+    }
+
+    private fun renderingMediasOrNotFoundMessage(mediaList: List<Media>){
+        if(mediaList.isNotEmpty())
+            fillGridLayout(mediaList)
+        else
+            Util.showMessage(fragmentView.context, "Nenhuma mídia foi encontrada")
     }
 }
