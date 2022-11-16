@@ -18,6 +18,7 @@ import com.example.moviesappkotlin.responses.MediaResponse
 import com.example.moviesappkotlin.responses.MediaResponseList
 import com.example.moviesappkotlin.services.ApiService
 import com.example.moviesappkotlin.util.Constants.Companion.API_KEY
+import com.example.moviesappkotlin.util.CustomMarkerView
 import com.example.moviesappkotlin.util.MediaMapper
 import com.example.moviesappkotlin.util.Util
 import com.github.mikephil.charting.charts.BarChart
@@ -25,7 +26,10 @@ import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.formatter.LargeValueFormatter
+import com.github.mikephil.charting.highlight.Highlight
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -43,12 +47,12 @@ class StatisticsFragment : Fragment(), Observer {
     private lateinit var chartLegends: TableLayout
     private lateinit var topTenRevenue: Observable
     private lateinit var chartColorArray: Array<Int>
-
+    private lateinit var customMarkerView: CustomMarkerView;
     /*
     private Context context;
     private ProgressBar progressBar;
     private int[] chartColorArray = new int[10];
-    private CustomMarkerView customMarkerView;
+
     * */
 
 
@@ -161,7 +165,6 @@ class StatisticsFragment : Fragment(), Observer {
     /*
     public void setViewsAndVariables(View view){
         this.progressBar = view.findViewById(R.id.progress_bar_statistics_fragment);
-        this.customMarkerView = new CustomMarkerView(getContext(), R.layout.marker_view);
         this.chartLegends = view.findViewById(R.id.chart_legends);
     }
     */
@@ -170,6 +173,7 @@ class StatisticsFragment : Fragment(), Observer {
         chartLegends = fragmentView.findViewById(R.id.chart_legends)
         topTenRevenue = TopTen(SORT_TYPE)
         topTenRevenue.addObserver(this)
+        customMarkerView = CustomMarkerView(fragmentView.context, R.layout.marker_view);
     }
 
     override fun update(observable: Observable?, obj: Any?) {
@@ -207,12 +211,21 @@ class StatisticsFragment : Fragment(), Observer {
         data.setDrawValues(false)                        // Removendo exibição de valores das barras
         data.barWidth = 0.8f                             // Espaço entre as barras
 
-//        addEventClickListenerOnTheChart()
+        addEventClickListenerOnTheChart()
 //        setChartLegends(barChart)
 
         barChart.data = data
         barChart.invalidate()                   // Fazer refresh
         barChart.animateY(500)      //Adicionando animação vertical às barras do gráfico
+    }
+
+    fun addEventClickListenerOnTheChart(){
+        barChart.setOnChartValueSelectedListener(object: OnChartValueSelectedListener{
+            override fun onValueSelected(e: Entry?, h: Highlight?) {
+                barChart.marker = customMarkerView
+            }
+            override fun onNothingSelected() {}
+        })
     }
 
     private fun launchChartColorArray(){
