@@ -8,4 +8,16 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="gray">#C1BCBC</color>
+
+    <!-- Cores das barras do gráfico de filmes mais lucrativos -->
+    <color name="bar_color_1">#f21f26</color>
+    <color name="bar_color_2">#f3d915</color>
+    <color name="bar_color_3">#ba5252</color>
+    <color name="bar_color_4">#c09491</color>
+    <color name="bar_color_5">#d4d9a1</color>
+    <color name="bar_color_6">#f8edd1</color>
+    <color name="bar_color_7">#d88a8a</color>
+    <color name="bar_color_8">#474843</color>
+    <color name="bar_color_9">#9d9d93</color>
+    <color name="bar_color_10">#c5cfc6</color>
 </resources>
