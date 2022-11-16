@@ -1,8 +1,10 @@
 package com.example.moviesappkotlin.services
 
+import com.example.moviesappkotlin.responses.MediaDetailsResponse
 import com.example.moviesappkotlin.responses.MediaResponseList
 import retrofit2.Call
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface MovieService {
@@ -13,4 +15,8 @@ interface MovieService {
     fun getMoviesByYear(@Query("api_key") apiKey: String,
                         @Query("primary_release_year") year: Int,
                         @Query("sort_by") sortBy: String): Call<MediaResponseList>
+
+    @GET("movie/{id}")
+    fun getMovieDetails(@Path("id") id: Long,
+                        @Query("api_key") apiKey: String?): Call<MediaDetailsResponse>
 }

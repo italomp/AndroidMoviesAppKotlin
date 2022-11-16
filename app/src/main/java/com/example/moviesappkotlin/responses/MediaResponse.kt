@@ -7,21 +7,21 @@ import com.example.moviesappkotlin.models.Show
 import com.example.moviesappkotlin.util.Constants
 import com.squareup.moshi.Json
 
-data class MediaResponse(
+open class MediaResponse(
     @Json(name = "id")
-    val id : Long,
+    open val id : Long,
     @Json(name = "original_title")
-    val title : String?,
+    open val title : String?,
     @Json(name = "original_name")
-    val name: String?,
+    open val name: String?,
     @Json(name = "poster_path")
-    val postPath : String?,
+    open val postPath : String?,
     @Json(name = "know_for")
-    val moviesAndShows : MutableList<MediaResponse>?,
+    open val moviesAndShows : MutableList<MediaResponse>?,
     @Json(name = "media_type")
-    val mediaType : String?,
+    open val mediaType : String?,
     @Json(name = "revenue")
-    val revenue : Long?){
+    open val revenue : Long?){
 
         fun getEntity(): Media {
             return if(Constants.MOVIE_TYPE == mediaType || title != null)

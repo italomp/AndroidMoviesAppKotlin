@@ -13,9 +13,12 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import com.example.moviesappkotlin.R
 import com.example.moviesappkotlin.models.Movie
+import com.example.moviesappkotlin.responses.MediaDetailsResponse
+import com.example.moviesappkotlin.responses.MediaResponse
 import com.example.moviesappkotlin.responses.MediaResponseList
 import com.example.moviesappkotlin.services.ApiService
 import com.example.moviesappkotlin.util.Constants.Companion.API_KEY
+import com.example.moviesappkotlin.util.MediaMapper
 import com.example.moviesappkotlin.util.Util
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.YAxis
@@ -79,7 +82,8 @@ class StatisticsFragment : Fragment(), Observer {
                     response: Response<MediaResponseList>
                 ) {
                     if(response.isSuccessful){
-
+                        var mediaResponseList: List<MediaResponse>  = response.body()!!.responseList
+                        getMoviesRevenue(mediaResponseList, topTenRevenue)
                     }
                     else{
                         Util.showMessage(
@@ -98,6 +102,39 @@ class StatisticsFragment : Fragment(), Observer {
         )
     }
 
+    fun getMoviesRevenue(mediaResponseList: List<MediaResponse>, topTenRevenue: TopTen){
+        var totalAmount = 10
+        for(i in 0 until totalAmount){
+            if( i == totalAmount)
+                break
+
+            var current = mediaResponseList[i]
+            ApiService.movieService.getMovieDetails(current.id, API_KEY).enqueue(
+                object: Callback<MediaDetailsResponse>{
+                    override fun onResponse(
+                        call: Call<MediaDetailsResponse>,
+                        response: Response<MediaDetailsResponse>
+                    ) {
+                        if(response.isSuccessful){
+                            val mediaDetailsResponse = response.body()
+                            val movie = MediaMapper.fromMediaDetailsToMovie(mediaDetailsResponse!!)
+                            topTenRevenue.addMovie(movie)
+                        }
+                        else{
+                            Util.showMessage(fragmentView.context,
+                                "Http Status Code: ${response.code()}")
+                        }
+                    }
+
+                    override fun onFailure(call: Call<MediaDetailsResponse>, t: Throwable) {
+                        Util.showMessage(fragmentView.context,
+                            "Falha de Comunicação")
+                    }
+                }
+            )
+        }
+    }
+
     private fun setSpinnerYear(){
         spinnerYear = fragmentView.findViewById(R.id.spinner_year);
         spinnerAdapter = ArrayAdapter.createFromResource(
@@ -111,9 +148,9 @@ class StatisticsFragment : Fragment(), Observer {
 //                Util.showProgressBarAndHiddenView(progressBar, new View[]{barChart, chartLegends});
 
                 // limpar a listagem anterior
-                topTenRevenue = TopTen(SORT_TYPE)
+                (topTenRevenue as TopTen).topTen = mutableListOf()
 
-                var year = spinnerYear.getSelectedItem().toString().toInt()
+                val year = spinnerYear.selectedItem.toString().toInt()
                 getMoviesByYear(year, SORT_TYPE, topTenRevenue as TopTen)
             }
 
@@ -194,7 +231,7 @@ class StatisticsFragment : Fragment(), Observer {
     }
 
     class TopTen(private val orderBy: String) : Observable(), Serializable{
-        private var topTen: MutableList<Movie> = mutableListOf()
+        var topTen: MutableList<Movie> = mutableListOf()
 
         fun addMovie(movie: Movie){
             this.topTen.add(movie)
