@@ -46,6 +46,7 @@ class StatisticsFragment : Fragment(), Observer {
     private lateinit var topTenRevenue: Observable
     private lateinit var chartColorArray: IntArray
     private lateinit var customMarkerView: CustomMarkerView;
+    private lateinit var progressBar: ProgressBar
     /*
     private ProgressBar progressBar;
     * */
@@ -68,6 +69,7 @@ class StatisticsFragment : Fragment(), Observer {
         if(savedInstanceState != null)
             println("deveria resgatar o bundle")
         else{
+            Util.showProgressBarAndHiddenView(progressBar, arrayOf(barChart, chartLegends))
             getMoviesByYear(year, SORT_TYPE, topTenRevenue as TopTen)
         }
 
@@ -144,7 +146,7 @@ class StatisticsFragment : Fragment(), Observer {
             override fun onItemSelected(
                 parent: AdapterView<*>?, view: View?, position: Int, id: Long
             ) {
-//                Util.showProgressBarAndHiddenView(progressBar, new View[]{barChart, chartLegends});
+                Util.showProgressBarAndHiddenView(progressBar, arrayOf(barChart, chartLegends))
 
                 // limpar a listagem anterior
                 (topTenRevenue as TopTen).topTen = mutableListOf()
@@ -169,6 +171,7 @@ class StatisticsFragment : Fragment(), Observer {
         topTenRevenue = TopTen(SORT_TYPE)
         topTenRevenue.addObserver(this)
         customMarkerView = CustomMarkerView(fragmentView.context, R.layout.marker_view);
+        progressBar = fragmentView.findViewById(R.id.progress_bar_statistics_fragment)
     }
 
     override fun update(observable: Observable?, obj: Any?) {
@@ -177,6 +180,7 @@ class StatisticsFragment : Fragment(), Observer {
             var entries: MutableList<BarEntry> = mutableListOf()
             setEntriesToBarChar(topTenList, entries)
             setBarChart(entries)
+            Util.hiddenProgressBarAndShowView(progressBar, arrayOf(barChart, chartLegends))
         }
     }
 
