@@ -5,10 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.GridLayout
-import android.widget.ImageView
-import android.widget.SearchView
-import android.widget.TextView
+import android.widget.*
 import com.example.moviesappkotlin.R
 import com.example.moviesappkotlin.models.Media
 import com.example.moviesappkotlin.models.Movie
@@ -29,6 +26,7 @@ class SearchFragment : Fragment() {
     private lateinit var gridLayout: GridLayout
     private lateinit var searchView: SearchView
     private lateinit var fragmentView: View
+    private lateinit var progressBar: ProgressBar
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,6 +40,7 @@ class SearchFragment : Fragment() {
 
     private fun setViews(){
         gridLayout = fragmentView.findViewById(R.id.grid_layout)
+        progressBar = fragmentView.findViewById(R.id.progress_bar_search_fragment)
         setSearchView()
     }
 
@@ -49,13 +48,16 @@ class SearchFragment : Fragment() {
         searchView = fragmentView.findViewById(R.id.search_view)
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String?): Boolean {
-                if (query == null) return false
+                if (query == null)
+                    return false
                 multiSearch(query)
                 return false
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                if (newText == null) return false
+                println(newText)
+                if (newText == null)
+                    return false
                 multiSearch(newText)
                 return false
             }
@@ -63,6 +65,8 @@ class SearchFragment : Fragment() {
     }
 
     private fun getMovies(){
+        val scrollView: ScrollView = fragmentView.findViewById(R.id.scroll_view_search_fragment)
+        Util.showProgressBarAndHiddenView(progressBar, arrayOf(scrollView))
         ApiService.movieService.getMovies(API_KEY).enqueue(
             object : Callback<MediaResponseList> {
                 override fun onResponse(
@@ -74,6 +78,7 @@ class SearchFragment : Fragment() {
                         var mediaResponseList : List<MediaResponse> = response.body()!!.responseList
                         var mediaList: List<Media> = MediaMapper.fromMediaResponseToMedia(mediaResponseList)
                         fillGridLayout(mediaList);
+                        Util.hiddenProgressBarAndShowView(progressBar, arrayOf(scrollView))
                     }
                     else{
                         Util.showMessage(fragmentView.context, "Http status code: ${response.code()}.")
