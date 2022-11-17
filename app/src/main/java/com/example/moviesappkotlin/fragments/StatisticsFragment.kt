@@ -1,14 +1,12 @@
 package com.example.moviesappkotlin.fragments
 
+import android.annotation.SuppressLint
+import android.widget.*
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Spinner
-import android.widget.TableLayout
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import com.example.moviesappkotlin.R
@@ -49,10 +47,7 @@ class StatisticsFragment : Fragment(), Observer {
     private lateinit var chartColorArray: IntArray
     private lateinit var customMarkerView: CustomMarkerView;
     /*
-    private Context context;
     private ProgressBar progressBar;
-    private int[] chartColorArray = new int[10];
-
     * */
 
 
@@ -106,7 +101,7 @@ class StatisticsFragment : Fragment(), Observer {
         )
     }
 
-    fun getMoviesRevenue(mediaResponseList: List<MediaResponse>, topTenRevenue: TopTen){
+    private fun getMoviesRevenue(mediaResponseList: List<MediaResponse>, topTenRevenue: TopTen){
         var totalAmount = 10
         for(i in 0 until totalAmount){
             if( i == totalAmount)
@@ -212,14 +207,14 @@ class StatisticsFragment : Fragment(), Observer {
         data.barWidth = 0.8f                             // Espaço entre as barras
 
         addEventClickListenerOnTheChart()
-//        setChartLegends(barChart)
+        setChartLegends(barChart)
 
         barChart.data = data
         barChart.invalidate()                   // Fazer refresh
         barChart.animateY(500)      //Adicionando animação vertical às barras do gráfico
     }
 
-    fun addEventClickListenerOnTheChart(){
+    private fun addEventClickListenerOnTheChart(){
         barChart.setOnChartValueSelectedListener(object: OnChartValueSelectedListener{
             override fun onValueSelected(e: Entry?, h: Highlight?) {
                 barChart.marker = customMarkerView
@@ -242,6 +237,89 @@ class StatisticsFragment : Fragment(), Observer {
             R.color.bar_color_10
         )
     }
+
+    @SuppressLint("CutPasteId")
+    private fun setChartLegends(barChart: BarChart){
+        setLegendIconColors()
+
+        val movieList = (topTenRevenue as TopTen).getTopTenRevenueDesc()
+
+        val txtRowOneColOne: TextView = fragmentView.findViewById(R.id.txt_row_1_col_1)
+        txtRowOneColOne.text = movieList[0].title
+
+        val txtRowOneColTwo: TextView = fragmentView.findViewById(R.id.txt_row_1_col_2)
+        txtRowOneColTwo.text = movieList[1].title
+
+        val txtTwoOneColOne: TextView = fragmentView.findViewById(R.id.txt_row_2_col_1)
+        txtTwoOneColOne.text = movieList[2].title
+
+        val txtTwoOneColTwo: TextView = fragmentView.findViewById(R.id.txt_row_2_col_2)
+        txtTwoOneColTwo.text = movieList[3].title
+
+        val txtRowThreeColOne: TextView = fragmentView.findViewById(R.id.txt_row_3_col_1)
+        txtRowThreeColOne.text = movieList[4].title
+
+        val txtRowThreeColTwo: TextView = fragmentView.findViewById(R.id.txt_row_3_col_2)
+        txtRowThreeColTwo.text = movieList[5].title
+
+        val txtRowFourColOne: TextView = fragmentView.findViewById(R.id.txt_row_4_col_1)
+        txtRowFourColOne.text = movieList[6].title
+
+        val txtRowFourColTwo: TextView = fragmentView.findViewById(R.id.txt_row_4_col_2)
+        txtRowFourColTwo.text = movieList[7].title
+
+        val txtRowFiveColOne: TextView = fragmentView.findViewById(R.id.txt_row_5_col_1)
+        txtRowFiveColOne.text = movieList[8].title
+
+        val txtRowFiveColTwo: TextView = fragmentView.findViewById(R.id.txt_row_5_col_2)
+        txtRowFiveColTwo.text = movieList[9].title
+    }
+
+
+    private fun setLegendIconColors(){
+        val BAR_COLOR_1 = 0xFFF21F26
+        val BAR_COLOR_2 = 0xFFF3D915
+        val BAR_COLOR_3 = 0xFFBA5252
+        val BAR_COLOR_5 = 0xFFD4D9A1
+        val BAR_COLOR_4 = 0xFFC09491
+        val BAR_COLOR_6 = 0xFFF8EDD1
+        val BAR_COLOR_7 = 0xFFD88A8A
+        val BAR_COLOR_8 = 0xFF474843
+        val BAR_COLOR_9 = 0xFF9D9D93
+        val BAR_COLOR_10 = 0xFFC5CFC6
+
+        val imgRowOneColOne: ImageView = this.fragmentView.findViewById(R.id.img_row_1_col_1)
+        imgRowOneColOne.setColorFilter(BAR_COLOR_1.toInt())
+
+        val imgRowOneColTwo: ImageView = this.fragmentView.findViewById(R.id.img_row_1_col_2)
+        imgRowOneColTwo.setColorFilter(BAR_COLOR_2.toInt())
+
+        val imgRowTwoColOne: ImageView = this.fragmentView.findViewById(R.id.img_row_2_col_1)
+        imgRowTwoColOne.setColorFilter(BAR_COLOR_3.toInt())
+
+        val imgRowTwoColTwo: ImageView = this.fragmentView.findViewById(R.id.img_row_2_col_2)
+        imgRowTwoColTwo.setColorFilter(BAR_COLOR_4.toInt())
+
+        val imgRowThreeColOne: ImageView = this.fragmentView.findViewById(R.id.img_row_3_col_1)
+        imgRowThreeColOne.setColorFilter(BAR_COLOR_5.toInt())
+
+        val imgRowThreeColTwo: ImageView = this.fragmentView.findViewById(R.id.img_row_3_col_2)
+        imgRowThreeColTwo.setColorFilter(BAR_COLOR_6.toInt())
+
+        val imgRowFourColOne: ImageView = this.fragmentView.findViewById(R.id.img_row_4_col_1)
+        imgRowFourColOne.setColorFilter(BAR_COLOR_7.toInt())
+
+        val imgRowFourColTwo: ImageView = this.fragmentView.findViewById(R.id.img_row_4_col_2)
+        imgRowFourColTwo.setColorFilter(BAR_COLOR_8.toInt())
+
+        val imgRowFiveColOne: ImageView = this.fragmentView.findViewById(R.id.img_row_5_col_1)
+        imgRowFiveColOne.setColorFilter(BAR_COLOR_9.toInt())
+
+        val imgRowFiveColTwo: ImageView = this.fragmentView.findViewById(R.id.img_row_5_col_2)
+        imgRowFiveColTwo.setColorFilter(BAR_COLOR_10.toInt())
+    }
+
+
 
     class TopTen(private val orderBy: String) : Observable(), Serializable{
         var topTen: MutableList<Movie> = mutableListOf()
@@ -266,3 +344,5 @@ class StatisticsFragment : Fragment(), Observer {
         }
     }
 }
+
+
