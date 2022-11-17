@@ -46,7 +46,7 @@ class StatisticsFragment : Fragment(), Observer {
     private lateinit var barChart: BarChart
     private lateinit var chartLegends: TableLayout
     private lateinit var topTenRevenue: Observable
-    private lateinit var chartColorArray: Array<Int>
+    private lateinit var chartColorArray: IntArray
     private lateinit var customMarkerView: CustomMarkerView;
     /*
     private Context context;
@@ -207,7 +207,7 @@ class StatisticsFragment : Fragment(), Observer {
         yAxisLeft.valueFormatter = LargeValueFormatter()
 
         launchChartColorArray()
-        dataSet.colors = chartColorArray.toMutableList() // Adicionando cor às barras
+        dataSet.setColors(chartColorArray, fragmentView.context) // Adicionando cor às barras
         data.setDrawValues(false)                        // Removendo exibição de valores das barras
         data.barWidth = 0.8f                             // Espaço entre as barras
 
@@ -229,7 +229,7 @@ class StatisticsFragment : Fragment(), Observer {
     }
 
     private fun launchChartColorArray(){
-        chartColorArray = arrayOf(
+        chartColorArray = intArrayOf(
             R.color.bar_color_1,
             R.color.bar_color_2,
             R.color.bar_color_3,
