@@ -17,7 +17,7 @@ import com.example.moviesappkotlin.responses.MediaResponseList
 import com.example.moviesappkotlin.services.ApiService
 import com.example.moviesappkotlin.util.Constants.Companion.API_KEY
 import com.example.moviesappkotlin.util.CustomMarkerView
-import com.example.moviesappkotlin.util.MediaMapper
+import com.example.moviesappkotlin.util.Mapper
 import com.example.moviesappkotlin.util.Util
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.YAxis
@@ -118,7 +118,7 @@ class StatisticsFragment : Fragment(), Observer {
                     ) {
                         if(response.isSuccessful){
                             val mediaDetailsResponse = response.body()
-                            val movie = MediaMapper.fromMediaDetailsToMovie(mediaDetailsResponse!!)
+                            val movie = Mapper.fromMediaDetailsToMovie(mediaDetailsResponse!!)
                             topTenRevenue.addMovie(movie)
                         }
                         else{

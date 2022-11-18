@@ -1,9 +1,10 @@
 package com.example.moviesappkotlin.models
 
 import com.example.moviesappkotlin.util.Constants
+import java.io.Serializable
 import java.util.*
 
-open class Media {
+open class Media: Serializable {
     open val id: Long?
     open val mediaType: String?
     open val title : String?

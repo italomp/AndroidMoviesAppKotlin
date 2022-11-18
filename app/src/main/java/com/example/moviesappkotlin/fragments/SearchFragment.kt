@@ -1,5 +1,6 @@
 package com.example.moviesappkotlin.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -7,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import com.example.moviesappkotlin.R
+import com.example.moviesappkotlin.activities.MediaDetailsActivity
 import com.example.moviesappkotlin.models.Media
 import com.example.moviesappkotlin.models.Movie
 import com.example.moviesappkotlin.models.Person
@@ -15,7 +17,7 @@ import com.example.moviesappkotlin.responses.MediaResponse
 import com.example.moviesappkotlin.responses.MediaResponseList
 import com.example.moviesappkotlin.services.ApiService
 import com.example.moviesappkotlin.util.Constants.Companion.API_KEY
-import com.example.moviesappkotlin.util.MediaMapper
+import com.example.moviesappkotlin.util.Mapper
 import com.example.moviesappkotlin.util.Util
 import com.squareup.picasso.Picasso
 import retrofit2.Call
@@ -76,7 +78,7 @@ class SearchFragment : Fragment() {
                     if(response.isSuccessful){
                         println(response.body())
                         var mediaResponseList : List<MediaResponse> = response.body()!!.responseList
-                        var mediaList: List<Media> = MediaMapper.fromMediaResponseToMedia(mediaResponseList)
+                        var mediaList: List<Media> = Mapper.fromMediaResponseToMedia(mediaResponseList)
                         fillGridLayout(mediaList);
                         Util.hiddenProgressBarAndShowView(progressBar, arrayOf(scrollView))
                     }
@@ -103,9 +105,23 @@ class SearchFragment : Fragment() {
             setMediaTitleView(titleMediaView, mediaList[i])
             setMediaPosterView(posterMediaView, mediaList[i])
 
+            setOnClickListener(posterMediaView, mediaList[i])
+            setOnClickListener(titleMediaView, mediaList[i])
+
             gridLayout.addView(cardView)
         }
     }
+
+    fun setOnClickListener(view: View, media: Media){
+        view.setOnClickListener(object : View.OnClickListener{
+            override fun onClick(v: View?) {
+                val intent = Intent(context, MediaDetailsActivity::class.java)
+                intent.putExtra("media", media)
+                startActivity(intent)
+            }
+        })
+    }
+
 
     private fun setMediaPosterView(posterMediaView: ImageView, media: Media){
         var posterPath : String? = ""
@@ -143,7 +159,7 @@ class SearchFragment : Fragment() {
                         gridLayout.removeAllViews();
 
                         val mediaResponseList : List<MediaResponse> = response.body()!!.responseList
-                        var mediaList: List<Media> = MediaMapper.fromMediaResponseToMedia(mediaResponseList)
+                        var mediaList: List<Media> = Mapper.fromMediaResponseToMedia(mediaResponseList)
 
                         // Extraindo filmes e shows de pessoas
                         mediaList = parseMedia(mediaList)

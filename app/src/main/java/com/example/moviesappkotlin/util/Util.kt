@@ -36,5 +36,9 @@ class Util {
                 view.visibility = View.VISIBLE
             }
         }
+
+        fun hiddenProgressBar(progressBar: View){
+            progressBar.visibility = View.INVISIBLE
+        }
     }
 }

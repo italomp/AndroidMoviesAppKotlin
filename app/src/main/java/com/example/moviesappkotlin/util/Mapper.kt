@@ -1,12 +1,12 @@
 package com.example.moviesappkotlin.util
 
+import com.example.moviesappkotlin.models.Crew
+import com.example.moviesappkotlin.models.Employee
 import com.example.moviesappkotlin.models.Media
 import com.example.moviesappkotlin.models.Movie
-import com.example.moviesappkotlin.responses.MediaDetailsResponse
-import com.example.moviesappkotlin.responses.MediaResponse
-import com.example.moviesappkotlin.responses.MediaResponseList
+import com.example.moviesappkotlin.responses.*
 
-class MediaMapper {
+class Mapper {
     companion object{
         fun fromMediaResponseToMedia(mediaResponseList: List<MediaResponse>?): List<Media>{
             val mediaList : MutableList<Media> = mutableListOf()
@@ -26,6 +26,22 @@ class MediaMapper {
                 Constants.MOVIE_TYPE,
                 mediaDetailsResponse.revenue
             )
+        }
+
+        fun fromCrewResponseToCrew(crewResponse: CrewResponse): Crew {
+            val employeeList = mapperEmployeeResponseListToEmployeeList(crewResponse.crew)
+            return Crew(employeeList)
+        }
+
+        fun mapperEmployeeResponseListToEmployeeList(empRespList: List<EmployeeResponse>)
+        : List<Employee>{
+            val result = mutableListOf<Employee>()
+            for(empResp in empRespList){
+                val newEmployee = Employee(
+                    empResp.id, empResp.name, empResp.department, empResp.profilePath)
+                result.add(newEmployee)
+            }
+            return result
         }
     }
 }

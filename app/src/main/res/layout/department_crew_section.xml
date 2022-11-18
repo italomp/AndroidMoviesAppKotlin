@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/department_section"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginBottom="10dp">
+
+    <TextView
+        android:id="@+id/department_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Departamento"
+        android:textSize="16sp"
+        android:textStyle="bold"/>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/department_view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/department_name"
+        android:paddingVertical="10dp"
+        android:paddingHorizontal="80dp"
+        android:clipChildren="false"
+        android:clipToPadding="false"/>
+
+</RelativeLayout>
