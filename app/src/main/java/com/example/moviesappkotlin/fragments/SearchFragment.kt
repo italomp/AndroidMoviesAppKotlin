@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.annotation.NonNull
 import com.example.moviesappkotlin.R
 import com.example.moviesappkotlin.activities.MediaDetailsActivity
 import com.example.moviesappkotlin.models.Media
@@ -18,17 +19,20 @@ import com.example.moviesappkotlin.responses.MediaResponseList
 import com.example.moviesappkotlin.services.ApiService
 import com.example.moviesappkotlin.util.Constants.Companion.API_KEY
 import com.example.moviesappkotlin.util.Mapper
+import com.example.moviesappkotlin.util.MyWindowMetrics
 import com.example.moviesappkotlin.util.Util
 import com.squareup.picasso.Picasso
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.Serializable
 
 class SearchFragment : Fragment() {
     private lateinit var gridLayout: GridLayout
     private lateinit var searchView: SearchView
     private lateinit var fragmentView: View
     private lateinit var progressBar: ProgressBar
+    private lateinit var serializableMediaList: MutableList<Media>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,14 +40,27 @@ class SearchFragment : Fragment() {
     ): View {
         fragmentView =  inflater.inflate(R.layout.fragment_search, container, false)
         setViews()
-        getMovies()
+        loadMovies(savedInstanceState)
+        setSearchView()
         return fragmentView
     }
 
+    private fun loadMovies(savedInstanceState: Bundle?){
+        if(savedInstanceState != null){
+            if(serializableMediaList == null){
+                serializableMediaList = savedInstanceState.getSerializable("serializableMediaList") as MutableList<Media>
+            }
+            fillGridLayout(serializableMediaList);
+        }
+        else{
+            getMovies();
+        }
+    }
+
     private fun setViews(){
-        gridLayout = fragmentView.findViewById(R.id.grid_layout)
         progressBar = fragmentView.findViewById(R.id.progress_bar_search_fragment)
-        setSearchView()
+        serializableMediaList = mutableListOf()
+        setGridLayout()
     }
 
     private fun setSearchView(){
@@ -77,8 +94,9 @@ class SearchFragment : Fragment() {
                 ) {
                     if(response.isSuccessful){
                         println(response.body())
-                        var mediaResponseList : List<MediaResponse> = response.body()!!.responseList
-                        var mediaList: List<Media> = Mapper.fromMediaResponseToMedia(mediaResponseList)
+                        val mediaResponseList : List<MediaResponse> = response.body()!!.responseList
+                        val mediaList: List<Media> = Mapper.fromMediaResponseToMedia(mediaResponseList)
+                        serializableMediaList.addAll(mediaList)
                         fillGridLayout(mediaList);
                         Util.hiddenProgressBarAndShowView(progressBar, arrayOf(scrollView))
                     }
@@ -163,6 +181,7 @@ class SearchFragment : Fragment() {
 
                         // Extraindo filmes e shows de pessoas
                         mediaList = parseMedia(mediaList)
+                        serializableMediaList.addAll(mediaList)
                         renderingMediasOrNotFoundMessage(mediaList)
                     }
                     else{
@@ -201,4 +220,31 @@ class SearchFragment : Fragment() {
         else
             Util.showMessage(fragmentView.context, "Nenhuma mídia foi encontrada")
     }
+
+    fun setGridLayout(){
+        gridLayout = fragmentView.findViewById(R.id.grid_layout)
+        val myWindowMetrics = MyWindowMetrics(requireActivity())
+        val widthWindowSizeClass = myWindowMetrics.getWidthSizeClass()
+        val heightWindowSizeClass = myWindowMetrics.getHeightSizeClass()
+
+       if(widthWindowSizeClass == MyWindowMetrics.WindowSizeClass.COMPACT)
+           gridLayout.columnCount = 2
+        else if(heightWindowSizeClass == MyWindowMetrics.WindowSizeClass.COMPACT)
+           gridLayout.columnCount = 3
+        else if(widthWindowSizeClass == MyWindowMetrics.WindowSizeClass.MEDIUM)
+            gridLayout.columnCount = 4
+        else if(heightWindowSizeClass == MyWindowMetrics.WindowSizeClass.MEDIUM &&
+           widthWindowSizeClass == MyWindowMetrics.WindowSizeClass.EXPANDED)
+            gridLayout.columnCount = 6
+    }
+
+    override fun onSaveInstanceState(outState: Bundle){
+        super.onSaveInstanceState(outState)
+        outState.putSerializable("serializableMediaList", serializableMediaList as Serializable)
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+    }
+
 }

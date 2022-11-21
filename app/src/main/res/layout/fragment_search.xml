@@ -22,7 +22,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
                 <SearchView
                     android:id="@+id/search_view"
@@ -38,16 +38,16 @@
 
                 <GridLayout
                     android:id="@+id/grid_layout"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:columnCount="2"
                     android:rowCount="10"
                     android:clipChildren="false"
                     android:clipToPadding="false"
                     android:paddingBottom="80dp"
-                    android:paddingEnd="8dp"
                     android:alignmentMode="alignBounds"
-                    tools:ignore="RtlSymmetry" />
+                    tools:ignore="RtlSymmetry"
+                    android:layout_gravity="center_horizontal"/>
             </LinearLayout>
         </ScrollView>
         <ProgressBar
