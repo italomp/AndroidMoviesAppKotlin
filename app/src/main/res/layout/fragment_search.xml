@@ -40,14 +40,13 @@
                     android:id="@+id/grid_layout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:columnCount="2"
-                    android:rowCount="10"
+                    android:alignmentMode="alignBounds"
                     android:clipChildren="false"
                     android:clipToPadding="false"
                     android:paddingBottom="80dp"
-                    android:alignmentMode="alignBounds"
-                    tools:ignore="RtlSymmetry"
-                    android:layout_gravity="center_horizontal"/>
+                    android:useDefaultMargins="true"
+                    android:layout_gravity="center"
+                    />
             </LinearLayout>
         </ScrollView>
         <ProgressBar
