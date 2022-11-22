@@ -20,20 +20,23 @@
             android:layout_marginTop="10dp"
             >
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
                 <SearchView
                     android:id="@+id/search_view"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:background="@drawable/search_view_background"
-                    android:layout_marginHorizontal="8dp"
                     android:queryHint="@string/placeholder_search"
                     android:queryBackground="@null"
                     android:iconifiedByDefault="false"
+                    app:layout_constraintStart_toStartOf="@id/grid_layout"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="@id/grid_layout"
+                    app:layout_constraintBottom_toTopOf="@id/grid_layout"
                     />
 
                 <GridLayout
@@ -46,8 +49,12 @@
                     android:paddingBottom="80dp"
                     android:useDefaultMargins="true"
                     android:layout_gravity="center"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/search_view"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     />
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
         <ProgressBar
             android:id="@+id/progress_bar_search_fragment"
