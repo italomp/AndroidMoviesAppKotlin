@@ -18,6 +18,7 @@ import com.example.moviesappkotlin.services.ApiService
 import com.example.moviesappkotlin.util.Constants.Companion.API_KEY
 import com.example.moviesappkotlin.util.CustomMarkerView
 import com.example.moviesappkotlin.util.Mapper
+import com.example.moviesappkotlin.util.MyWindowMetrics
 import com.example.moviesappkotlin.util.Util
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.YAxis
@@ -36,21 +37,25 @@ import java.util.*
 import java.util.stream.Collectors
 
 @RequiresApi(Build.VERSION_CODES.N)
-class StatisticsFragment : Fragment(), Observer {
-    private lateinit var fragmentView: View
-    private val SORT_TYPE = "revenue.desc"
-    private lateinit var spinnerYear: Spinner
-    private lateinit var spinnerAdapter: ArrayAdapter<CharSequence>
-    private lateinit var barChart: BarChart
-    private lateinit var chartLegends: TableLayout
+class StatisticsFragment : Fragment(), Observer, Serializable {
     private lateinit var topTenRevenue: Observable
+    private val SORT_TYPE = "revenue.desc"
+    @Transient
+    private lateinit var fragmentView: View
+    @Transient
+    private lateinit var spinnerYear: Spinner
+    @Transient
+    private lateinit var spinnerAdapter: ArrayAdapter<CharSequence>
+    @Transient
+    private lateinit var barChart: BarChart
+    @Transient
+    private lateinit var chartLegends: TableLayout
+    @Transient
     private lateinit var chartColorArray: IntArray
+    @Transient
     private lateinit var customMarkerView: CustomMarkerView;
+    @Transient
     private lateinit var progressBar: ProgressBar
-    /*
-    private ProgressBar progressBar;
-    * */
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,16 +63,18 @@ class StatisticsFragment : Fragment(), Observer {
     ): View {
         fragmentView = inflater.inflate(R.layout.fragment_statistics, container, false)
 
-        setViewsAndVariables()
+//        setViewsAndVariables()
+        setViews(inflater, container)
+        setVariables()
         setSpinnerYear()
-        var year = spinnerYear.selectedItem.toString().toInt()
+        val year = spinnerYear.selectedItem.toString().toInt()
         loadTopTenRevenue(savedInstanceState, year)
         return fragmentView
     }
 
     private fun loadTopTenRevenue(savedInstanceState: Bundle?, year: Int){
         if(savedInstanceState != null)
-            println("deveria resgatar o bundle")
+            topTenRevenue = savedInstanceState.getSerializable("topTenRevenue") as TopTen
         else{
             Util.showProgressBarAndHiddenView(progressBar, arrayOf(barChart, chartLegends))
             getMoviesByYear(year, SORT_TYPE, topTenRevenue as TopTen)
@@ -104,12 +111,12 @@ class StatisticsFragment : Fragment(), Observer {
     }
 
     private fun getMoviesRevenue(mediaResponseList: List<MediaResponse>, topTenRevenue: TopTen){
-        var totalAmount = 10
+        val totalAmount = 10
         for(i in 0 until totalAmount){
             if( i == totalAmount)
                 break
 
-            var current = mediaResponseList[i]
+            val current = mediaResponseList[i]
             ApiService.movieService.getMovieDetails(current.id, API_KEY).enqueue(
                 object: Callback<MediaDetailsResponse>{
                     override fun onResponse(
@@ -159,25 +166,10 @@ class StatisticsFragment : Fragment(), Observer {
         }
     }
 
-    /*
-    public void setViewsAndVariables(View view){
-        this.progressBar = view.findViewById(R.id.progress_bar_statistics_fragment);
-        this.chartLegends = view.findViewById(R.id.chart_legends);
-    }
-    */
-    private fun setViewsAndVariables(){
-        barChart = fragmentView.findViewById(R.id.bar_chart)
-        chartLegends = fragmentView.findViewById(R.id.chart_legends)
-        topTenRevenue = TopTen(SORT_TYPE)
-        topTenRevenue.addObserver(this)
-        customMarkerView = CustomMarkerView(fragmentView.context, R.layout.marker_view);
-        progressBar = fragmentView.findViewById(R.id.progress_bar_statistics_fragment)
-    }
-
     override fun update(observable: Observable?, obj: Any?) {
         if(observable is TopTen){
-            var topTenList: List<Movie> = obj as List<Movie>
-            var entries: MutableList<BarEntry> = mutableListOf()
+            val topTenList: List<Movie> = obj as List<Movie>
+            val entries: MutableList<BarEntry> = mutableListOf()
             setEntriesToBarChar(topTenList, entries)
             setBarChart(entries)
             Util.hiddenProgressBarAndShowView(progressBar, arrayOf(barChart, chartLegends))
@@ -202,7 +194,7 @@ class StatisticsFragment : Fragment(), Observer {
         barChart.setFitBars(true)              // Ponto as barras centralizadas aos pontos de x
 
         // Formatando valores às esqueda do eixo Y
-        var yAxisLeft: YAxis = barChart.axisLeft
+        val yAxisLeft: YAxis = barChart.axisLeft
         yAxisLeft.valueFormatter = LargeValueFormatter()
 
         launchChartColorArray()
@@ -323,7 +315,39 @@ class StatisticsFragment : Fragment(), Observer {
         imgRowFiveColTwo.setColorFilter(BAR_COLOR_10.toInt())
     }
 
+    private fun setViews(inflater: LayoutInflater, container: ViewGroup?){
+        val myWindowMetrics = MyWindowMetrics(requireActivity())
+        val widthWindowSizeClass = myWindowMetrics.getWidthSizeClass()
+        val heightWindowSizeClass = myWindowMetrics.getHeightSizeClass()
+        // Phone port
+        if(widthWindowSizeClass == MyWindowMetrics.WindowSizeClass.COMPACT)
+            fragmentView = inflater.inflate(R.layout.fragment_statistics, container, false)
+        // Phone land
+        else if(heightWindowSizeClass == MyWindowMetrics.WindowSizeClass.COMPACT)
+            fragmentView = inflater.inflate(R.layout.fragment_statistics_phone_land, container, false)
+        // Tablet port
+        else if(widthWindowSizeClass == MyWindowMetrics.WindowSizeClass.MEDIUM)
+            fragmentView = inflater.inflate(R.layout.fragment_statistics_tablet_port, container, false)
+        // Tablet land
+        else if(widthWindowSizeClass == MyWindowMetrics.WindowSizeClass.EXPANDED &&
+            heightWindowSizeClass == MyWindowMetrics.WindowSizeClass.MEDIUM)
+            fragmentView = inflater.inflate(R.layout.fragment_statistics_tablet_land, container, false)
 
+        barChart = fragmentView.findViewById(R.id.bar_chart)
+        progressBar = fragmentView.findViewById(R.id.progress_bar_statistics_fragment)
+        chartLegends = fragmentView.findViewById(R.id.chart_legends)
+    }
+
+    private fun setVariables(){
+        topTenRevenue = TopTen(SORT_TYPE)
+        topTenRevenue.addObserver(this)
+        customMarkerView = CustomMarkerView(context, R.layout.marker_view)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putSerializable("topTenRevenue", topTenRevenue as Serializable)
+    }
 
     class TopTen(private val orderBy: String) : Observable(), Serializable{
         var topTen: MutableList<Movie> = mutableListOf()

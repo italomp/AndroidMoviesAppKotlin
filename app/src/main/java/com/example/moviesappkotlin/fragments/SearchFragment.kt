@@ -27,10 +27,14 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.io.Serializable
 
-class SearchFragment : Fragment() {
+class SearchFragment : Fragment(), Serializable {
+    @Transient
     private lateinit var gridLayout: GridLayout
+    @Transient
     private lateinit var searchView: SearchView
+    @Transient
     private lateinit var fragmentView: View
+    @Transient
     private lateinit var progressBar: ProgressBar
     private lateinit var serializableMediaList: MutableList<Media>
 
@@ -47,9 +51,7 @@ class SearchFragment : Fragment() {
 
     private fun loadMovies(savedInstanceState: Bundle?){
         if(savedInstanceState != null){
-            if(serializableMediaList == null){
-                serializableMediaList = savedInstanceState.getSerializable("serializableMediaList") as MutableList<Media>
-            }
+            serializableMediaList = savedInstanceState.getSerializable("serializableMediaList") as MutableList<Media>
             fillGridLayout(serializableMediaList);
         }
         else{
