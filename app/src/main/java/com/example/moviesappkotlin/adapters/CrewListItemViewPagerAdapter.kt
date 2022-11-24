@@ -34,6 +34,8 @@ class CrewListItemViewPagerAdapter(
 
     override fun getItemCount(): Int = employeeList.size
 
+    override fun getItemId(position: Int): Long = super.getItemId(position)
+
     class EmployeeCardViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         var employeePhoto: ImageView
         var employeeName: TextView
@@ -44,5 +46,4 @@ class CrewListItemViewPagerAdapter(
             employeeName = employeeCard.findViewById(R.id.employee_name)
         }
     }
-
 }
