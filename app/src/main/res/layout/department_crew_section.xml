@@ -14,13 +14,12 @@
         android:textSize="16sp"
         android:textStyle="bold"/>
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/department_view_pager"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/employees_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@id/department_name"
         android:paddingVertical="10dp"
-        android:paddingHorizontal="80dp"
         android:clipChildren="false"
         android:clipToPadding="false"/>
 

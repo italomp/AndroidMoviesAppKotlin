@@ -6,6 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.MarginPageTransformer
 import androidx.viewpager2.widget.ViewPager2
@@ -121,15 +124,15 @@ class MediaDetailsActivity : AppCompatActivity() {
         if(response.body() == null)
             return
 
-        var mediaTitle: String = if(Util.isItMovie(media))
+        val mediaTitle: String = if(Util.isItMovie(media))
             response.body()!!.title!!
         else if(Util.isItShow(media))
             (response.body() as Show).name!!
         else
             (response.body() as Person).title!!
-        var mediaOverview: String? = response.body()!!.overview
-        var postPath: String? = response.body()!!.posterPath
-        var noteAverage: Float = response.body()!!.voteAverage
+        val mediaOverview: String? = response.body()!!.overview
+        val postPath: String? = response.body()!!.posterPath
+        val noteAverage: Float = response.body()!!.voteAverage
 
         titleView.text = mediaTitle
         noteAverageView.text = "Avaliação do usuário: ${noteAverage}%"
@@ -203,27 +206,20 @@ class MediaDetailsActivity : AppCompatActivity() {
         for(department in departments){
             val departmentSectionView = LayoutInflater
                 .from(applicationContext)
-                .inflate(R.layout.department_crew_section, layoutCrewList, false) // Tavles seja necessário adicionar o AS RELATIVELAYOUT
+                .inflate(R.layout.department_crew_section, layoutCrewList, false)
             val departmentNameView = departmentSectionView.findViewById<TextView>(R.id.department_name)
-            val viewPager = departmentSectionView.findViewById<ViewPager2>(R.id.department_view_pager)
+            val employeeRecyclerView = departmentSectionView.findViewById<RecyclerView>(R.id.employees_list)
+            val layoutManager = LinearLayoutManager(baseContext)
             val employeeListFromCurrentDepartment = crew.getEmployeesByDepartment(department)
             val adapter = CrewListItemViewPagerAdapter(employeeListFromCurrentDepartment)
+            adapter.hasStableIds()
+            employeeRecyclerView.setHasFixedSize(true)
+            layoutManager.orientation = RecyclerView.HORIZONTAL
+            employeeRecyclerView.layoutManager = layoutManager
 
             departmentNameView.text = department
-            viewPager.adapter = adapter
+            employeeRecyclerView.adapter = adapter
 
-            viewPager.offscreenPageLimit = 3
-
-            val compositePageTransformer = CompositePageTransformer()
-            compositePageTransformer.addTransformer(MarginPageTransformer(40))
-            compositePageTransformer.addTransformer(object:ViewPager2.PageTransformer{
-                override fun transformPage(page: View, position: Float) {
-                    val r = 1 - abs(position);
-                    page.scaleY = 0.85f + r * 0.15f;
-                }
-            })
-
-            viewPager.setPageTransformer(compositePageTransformer)
             layoutCrewList.addView(departmentSectionView)
         }
     }
