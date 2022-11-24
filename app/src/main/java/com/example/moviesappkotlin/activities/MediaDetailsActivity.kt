@@ -132,7 +132,7 @@ class MediaDetailsActivity : AppCompatActivity() {
             (response.body() as Person).title!!
         val mediaOverview: String? = response.body()!!.overview
         val postPath: String? = response.body()!!.posterPath
-        val noteAverage: Float = response.body()!!.voteAverage
+        val noteAverage: String = String.format("%.1f", response.body()!!.voteAverage)
 
         titleView.text = mediaTitle
         noteAverageView.text = "Avaliação do usuário: ${noteAverage}%"

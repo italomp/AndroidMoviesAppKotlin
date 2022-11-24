@@ -16,8 +16,8 @@ class MediaDetailsResponse(
     @Json(name = "vote_average")
     var voteAverage: Float ){
 
-    fun getVoteAverage10x(): Float{
-        return voteAverage * 10
+    init {
+        voteAverage *= 10
     }
 
 }
