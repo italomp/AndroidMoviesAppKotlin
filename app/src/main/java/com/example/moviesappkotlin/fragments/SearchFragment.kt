@@ -69,7 +69,7 @@ class SearchFragment : Fragment(), Serializable {
         searchView = fragmentView.findViewById(R.id.search_view)
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String?): Boolean {
-                if (query == null)
+                if (query == null || query == "")
                     return false
                 multiSearch(query)
                 return false
@@ -77,7 +77,7 @@ class SearchFragment : Fragment(), Serializable {
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 println(newText)
-                if (newText == null)
+                if (newText == null || newText == "")
                     return false
                 multiSearch(newText)
                 return false
